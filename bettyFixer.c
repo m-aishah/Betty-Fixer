@@ -1,5 +1,7 @@
 #include "bettyFixer.h"
 
+bettyError *tokenize(char[]);
+
 /**
  * createPipe - Creates a new pipe.
  * @pipeFd: Array of integers to store the file descriptors of the new pipe.
@@ -35,7 +37,6 @@ int runBetty(char *fileName)
         /* Close pipe if fork failed. */
         close(pipeFd[0]);
         close(pipeFd[1]);
-
         perror("fork");
         return (-1);
     }
@@ -58,13 +59,95 @@ int runBetty(char *fileName)
     printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>I am in the parent process\n");
     close(pipeFd[1]);
 
-    /* Read read form pipe into buffer and write from buffer to the stdout. */
-    char buff[1024];
-    size_t charsRead;
-    while (charsRead = read(pipeFd[0], buff, 1024))
+    char c;
+    int charsRead = 0, totalCharsRead = 0, lineCount = 0;
+    char line[1024] = {0};
+    int i = 0;
+    bettyError *error;
+    bettyError *Errors[100]; /* Can't have more than 100 errors. */
+
+    while ((charsRead = read(pipeFd[0], &c, 1)) > 0)
     {
-        write(STDOUT_FILENO, buff, charsRead);
+        if (c == '\n')
+            lineCount++;
+
+        if (lineCount > 1)
+        {
+            if (c != '\n')
+            {
+                strcat(line, &c);
+            }
+            else
+            {
+                printf("\n>>>>>>>>>>>>>>>>>>>>>Line %d>>>>>\n", lineCount);
+                write(1, line, strlen(line));
+
+                error = tokenize(line);
+                if (error && (strcmp(error->fileName, "total") != 0))
+                {
+                    Errors[i] = error;
+                    /* Printing for testing */
+                    printf("\n\tFileName: %s", Errors[i]->fileName);
+                    printf("\n\tlineNumber: %s", Errors[i]->lineNumber);
+                    printf("\n\terrorType: %s", Errors[i]->errorType);
+                    printf("\n\terrorMessage: %s", Errors[i]->errorMessage);
+                    i++;
+                }
+                /* Empty the line buffer */
+                memset(line, 0, sizeof(line));
+            }
+        }
     }
 
+    printf("Outside");
+    write(1, line, strlen(line));
+    close(pipeFd[0]);
+
     return (1);
+}
+
+bettyError *tokenize(char line[1024])
+{
+    bettyError *error;
+    char *token;
+
+    if (line[0] != 0)
+    {
+        printf("\n\tIn tokenize function: end%s\n", line);
+        error = malloc(sizeof(bettyError));
+        token = strtok(line, ":");
+        if (token != NULL)
+        {
+            error->fileName = strdup(token);
+            strcat(error->fileName, "\0");
+            // printf("\n The fileName: %s\n", error->fileName);
+            token = strtok(NULL, ":");
+        }
+
+        if (token != NULL)
+        {
+            error->lineNumber = strdup(token);
+            strcat(error->lineNumber, "\0");
+            // printf("\n The LineNumber: %s\n", error->lineNumber);
+            token = strtok(NULL, ":");
+        }
+
+        if (token != NULL)
+        {
+            error->errorType = strdup(token);
+            strcat(error->errorType, "\0");
+            // printf("\n The errorType: %s\n", error->errorType);
+            token = strtok(NULL, ":");
+        }
+
+        if (token != NULL)
+        {
+            error->errorMessage = strdup(token);
+            strcat(error->errorMessage, "\0");
+            // printf("\n The errorMessage: %s\n", error->errorMessage);
+        }
+
+        return error;
+    }
+    return NULL;
 }
