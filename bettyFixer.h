@@ -21,6 +21,9 @@ struct bettyError
 typedef struct bettyError bettyError;
 
 int runBetty(char *);
+void parseBettyOutput(int[]);
+bettyError *tokenizeErrorLine(char[]);
+
 void createPipe(int[]);
 
 #endif

@@ -1,6 +1,6 @@
 #include "bettyFixer.h"
 
-bettyError *tokenize(char[]);
+bettyError *Errors[100]; /* Can't have more than 100 errors. */
 
 /**
  * createPipe - Creates a new pipe.
@@ -59,12 +59,19 @@ int runBetty(char *fileName)
     printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>I am in the parent process\n");
     close(pipeFd[1]);
 
+    parseBettyOutput(pipeFd);
+    close(pipeFd[0]);
+
+    return (1);
+}
+
+void parseBettyOutput(int pipeFd[2])
+{
     char c;
-    int charsRead = 0, totalCharsRead = 0, lineCount = 0;
     char line[1024] = {0};
+    int charsRead = 0, totalCharsRead = 0, lineCount = 0;
     int i = 0;
     bettyError *error;
-    bettyError *Errors[100]; /* Can't have more than 100 errors. */
 
     while ((charsRead = read(pipeFd[0], &c, 1)) > 0)
     {
@@ -82,7 +89,7 @@ int runBetty(char *fileName)
                 printf("\n>>>>>>>>>>>>>>>>>>>>>Line %d>>>>>\n", lineCount);
                 write(1, line, strlen(line));
 
-                error = tokenize(line);
+                error = tokenizeErrorLine(line);
                 if (error && (strcmp(error->fileName, "total") != 0))
                 {
                     Errors[i] = error;
@@ -98,15 +105,14 @@ int runBetty(char *fileName)
             }
         }
     }
+    // fixError(lineCount, Errors);
+    printf("\nline Count = %d\n", lineCount);
 
     printf("Outside");
     write(1, line, strlen(line));
-    close(pipeFd[0]);
-
-    return (1);
 }
 
-bettyError *tokenize(char line[1024])
+bettyError *tokenizeErrorLine(char line[1024])
 {
     bettyError *error;
     char *token;
