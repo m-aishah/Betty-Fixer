@@ -51,7 +51,7 @@ int runBetty(char *fileName)
         execlp("betty", "betty", fileName, NULL);
 
         perror("exec");
-        return (-1);
+        exit(EXIT_FAILURE);
     }
     /* In the parent process*/
     wait(&status);
@@ -60,6 +60,7 @@ int runBetty(char *fileName)
     close(pipeFd[1]);
 
     parseBettyOutput(pipeFd);
+
     close(pipeFd[0]);
 
     return (1);
@@ -90,11 +91,11 @@ void parseBettyOutput(int pipeFd[2])
                 write(1, line, strlen(line));
 
                 error = tokenizeErrorLine(line);
-                if (error && (strcmp(error->fileName, "total") != 0))
+                if (error && error->errorType)
                 {
                     Errors[i] = error;
                     /* Printing for testing */
-                    printf("\n\tFileName: %s", Errors[i]->fileName);
+                    printf("\n\tFileName:%s_", Errors[i]->fileName);
                     printf("\n\tlineNumber: %s", Errors[i]->lineNumber);
                     printf("\n\terrorType: %s", Errors[i]->errorType);
                     printf("\n\terrorMessage: %s", Errors[i]->errorMessage);
@@ -104,6 +105,12 @@ void parseBettyOutput(int pipeFd[2])
                 memset(line, 0, sizeof(line));
             }
         }
+    }
+    if (lineCount == 2)
+    {
+        fprintf(stderr, "File does not exist!\n");
+        /* Free error */
+        exit(EXIT_FAILURE);
     }
     // fixError(lineCount, Errors);
     printf("\nline Count = %d\n", lineCount);
@@ -126,7 +133,6 @@ bettyError *tokenizeErrorLine(char line[1024])
         {
             error->fileName = strdup(token);
             strcat(error->fileName, "\0");
-            // printf("\n The fileName: %s\n", error->fileName);
             token = strtok(NULL, ":");
         }
 
@@ -134,7 +140,6 @@ bettyError *tokenizeErrorLine(char line[1024])
         {
             error->lineNumber = strdup(token);
             strcat(error->lineNumber, "\0");
-            // printf("\n The LineNumber: %s\n", error->lineNumber);
             token = strtok(NULL, ":");
         }
 
@@ -142,7 +147,6 @@ bettyError *tokenizeErrorLine(char line[1024])
         {
             error->errorType = strdup(token);
             strcat(error->errorType, "\0");
-            // printf("\n The errorType: %s\n", error->errorType);
             token = strtok(NULL, ":");
         }
 
@@ -150,7 +154,6 @@ bettyError *tokenizeErrorLine(char line[1024])
         {
             error->errorMessage = strdup(token);
             strcat(error->errorMessage, "\0");
-            // printf("\n The errorMessage: %s\n", error->errorMessage);
         }
 
         return error;
