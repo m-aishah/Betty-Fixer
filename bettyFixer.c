@@ -106,6 +106,13 @@ int runBetty(char *fileName)
     return (1);
 }
 
+/**
+ * tokenize - a function to tokenize each betty error message
+ * @line: the error message/line to be tokenized
+ * Return: a data structure (bettyError) containing
+ * the different components of the error message
+ */
+
 bettyError *tokenize(char line[1024])
 {
     bettyError *error;
