@@ -62,6 +62,7 @@ int runBetty(char *fileName)
     parseBettyOutput(pipeFd);
 
     close(pipeFd[0]);
+    readWrite(fileName);
 
     return (1);
 }
@@ -165,4 +166,44 @@ bettyError *tokenizeErrorLine(char line[1024])
         return error;
     }
     return NULL;
+}
+
+/**
+ * readWrite - a function to read and rewrite a file with modifications
+ * @fileName: file to be read
+ * Return: 1 for success, otherwise -1
+ */
+
+int readWrite(char *fileName)
+{
+	FILE *filePtr, *tempFile;
+	int lineCounter = 0;
+	bettyError *errorPtr;
+	char buffer[1024];
+
+	filePtr = fopen(fileName, "r");
+	if (filePtr == NULL)
+	{
+		perror("fopen");
+		return (-1);
+	}
+
+	tempFile = fopen("tmp.c", "w");
+	if (tempFile == NULL)
+	{
+		fclose(filePtr);
+		perror("fopen");
+		return(-1);
+	}
+
+	while (fgets(buffer, 1024, filePtr) != NULL)
+	{
+		lineCounter++;
+		fputs(buffer, tempFile);
+	}
+
+	fclose(tempFile);
+	fclose(filePtr);
+
+	return(1);
 }

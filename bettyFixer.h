@@ -20,11 +20,13 @@ struct bettyError
 
 typedef struct bettyError bettyError;
 
+bettyError *Errors[100]; /* Can't have more than 100 errors. */
 int runBetty(char *);
 void parseBettyOutput(int[]);
 bettyError *tokenizeErrorLine(char[]);
 
 void createPipe(int[]);
-int removeTrailingWhitespaces(const char *fileName);
+/* int removeTrailingWhitespaces(const char *fileName); */
+int readWrite(char *fileName);
 
 #endif
