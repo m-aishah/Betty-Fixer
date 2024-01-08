@@ -119,6 +119,12 @@ void parseBettyOutput(int pipeFd[2])
     write(1, line, strlen(line));
 }
 
+/**
+ * tokenizeErrorLine - a function to tokenize each betty error message
+ * @line: the error message/line to be tokenized
+ * Return: a data structure (bettyError) containing
+ * the different components of the error message
+ */
 bettyError *tokenizeErrorLine(char line[1024])
 {
     bettyError *error;

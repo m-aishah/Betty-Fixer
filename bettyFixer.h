@@ -25,5 +25,6 @@ void parseBettyOutput(int[]);
 bettyError *tokenizeErrorLine(char[]);
 
 void createPipe(int[]);
+int removeTrailingWhitespaces(const char *fileName);
 
 #endif
