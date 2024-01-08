@@ -13,7 +13,7 @@
 struct bettyError
 {
     char *fileName;
-    char *lineNumber;
+    int lineNumber;
     char *errorType;
     char *errorMessage;
 };
@@ -28,5 +28,6 @@ bettyError *tokenizeErrorLine(char[]);
 void createPipe(int[]);
 /* int removeTrailingWhitespaces(const char *fileName); */
 int readWrite(char *fileName);
+char * checkErrorMessage(char buffer[]);
 
 #endif

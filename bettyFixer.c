@@ -97,7 +97,7 @@ void parseBettyOutput(int pipeFd[2])
                     Errors[i] = error;
                     /* Printing for testing */
                     printf("\n\tFileName:%s_", Errors[i]->fileName);
-                    printf("\n\tlineNumber: %s", Errors[i]->lineNumber);
+                    printf("\n\tlineNumber: %d", Errors[i]->lineNumber);
                     printf("\n\terrorType: %s", Errors[i]->errorType);
                     printf("\n\terrorMessage: %s", Errors[i]->errorMessage);
                     i++;
@@ -145,8 +145,9 @@ bettyError *tokenizeErrorLine(char line[1024])
 
         if (token != NULL)
         {
-            error->lineNumber = strdup(token);
-            strcat(error->lineNumber, "\0");
+	    printf("token before: %s=\n", token);
+            error->lineNumber = atoi(&token[1]);
+	    printf("DEBUG: converted line number: %d\n", error->lineNumber);
             token = strtok(NULL, ":");
         }
 
@@ -178,8 +179,9 @@ int readWrite(char *fileName)
 {
 	FILE *filePtr, *tempFile;
 	int lineCounter = 0;
-	bettyError *errorPtr;
+	bettyError **errorPtr;
 	char buffer[1024];
+	char *modifiedLine;
 
 	filePtr = fopen(fileName, "r");
 	if (filePtr == NULL)
@@ -196,14 +198,37 @@ int readWrite(char *fileName)
 		return(-1);
 	}
 
+	errorPtr = Errors;
 	while (fgets(buffer, 1024, filePtr) != NULL)
 	{
 		lineCounter++;
-		fputs(buffer, tempFile);
+		if (lineCounter == (*errorPtr)->lineNumber)
+		{
+			modifiedLine = strdup(checkErrorMessage(buffer));
+			fputs(modifiedLine, tempFile);
+			free (modifiedLine);
+			errorPtr++;
+		}
+		else
+			fputs(buffer, tempFile);
 	}
+
+
 
 	fclose(tempFile);
 	fclose(filePtr);
 
 	return(1);
+}
+
+/**
+ * checkErrorMessage - a function to check tne betty error messages for a match
+ * and carry out the corresponding action
+ * @buffer: line to be compared to the error message
+ * Return: modified line
+ */
+
+char * checkErrorMessage(char buffer[])
+{
+	return ("This line has an error");
 }
