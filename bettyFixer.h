@@ -22,5 +22,6 @@ typedef struct bettyError bettyError;
 
 int runBetty(char *);
 void createPipe(int[]);
+int removeTrailingWhitespaces(const char *fileName);
 
 #endif
