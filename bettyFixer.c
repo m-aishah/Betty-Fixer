@@ -84,11 +84,12 @@ void parseBettyOutput(int pipeFd[2])
         {
             if (c != '\n')
             {
-                strcat(line, &c);
+                line[strlen(line)] = c;
             }
             else
             {
-                printf("\n>>>>>>>>>>>>>>>>>>>>>Line %d>>>>>\n", lineCount);
+                line[strlen(line)] = '\0';
+                printf("\n>>>>>>>>>>>>>>>>>>>>>Line %d>>>>>,  %ld\n", lineCount, strlen(line));
                 write(1, line, strlen(line));
 
                 error = tokenizeErrorLine(line);
@@ -96,7 +97,7 @@ void parseBettyOutput(int pipeFd[2])
                 {
                     Errors[i] = error;
                     /* Printing for testing */
-                    printf("\n\tFileName:%s_", Errors[i]->fileName);
+                    printf("\n\tFileName:%s, %ld_", Errors[i]->fileName, strlen(Errors[i]->fileName));
                     printf("\n\tlineNumber: %d", Errors[i]->lineNumber);
                     printf("\n\terrorType: %s", Errors[i]->errorType);
                     printf("\n\terrorMessage: %s", Errors[i]->errorMessage);
@@ -109,15 +110,11 @@ void parseBettyOutput(int pipeFd[2])
     }
     if (lineCount == 2)
     {
-        fprintf(stderr, "File does not exist!\n");
         /* Free error */
         exit(EXIT_FAILURE);
     }
     // fixError(lineCount, Errors);
     printf("\nline Count = %d\n", lineCount);
-
-    printf("Outside");
-    write(1, line, strlen(line));
 }
 
 /**
@@ -145,9 +142,9 @@ bettyError *tokenizeErrorLine(char line[1024])
 
         if (token != NULL)
         {
-	    printf("token before: %s=\n", token);
-            error->lineNumber = atoi(&token[1]);
-	    printf("DEBUG: converted line number: %d\n", error->lineNumber);
+            printf("token before:%s, len= %ld\n", token, strlen(token));
+            error->lineNumber = atoi(token);
+            printf("DEBUG: converted line number: %d\n", error->lineNumber);
             token = strtok(NULL, ":");
         }
 
@@ -177,48 +174,58 @@ bettyError *tokenizeErrorLine(char line[1024])
 
 int readWrite(char *fileName)
 {
-	FILE *filePtr, *tempFile;
-	int lineCounter = 0;
-	bettyError **errorPtr;
-	char buffer[1024];
-	char *modifiedLine;
+    FILE *filePtr, *tempFile;
+    int lineCounter = 0;
+    bettyError **errorPtr;
+    char buffer[1024];
+    char *modifiedLine;
 
-	filePtr = fopen(fileName, "r");
-	if (filePtr == NULL)
-	{
-		perror("fopen");
-		return (-1);
-	}
+    printf("\n\nIN READWRITE FUNCTION\n");
 
-	tempFile = fopen("tmp.c", "w");
-	if (tempFile == NULL)
-	{
-		fclose(filePtr);
-		perror("fopen");
-		return(-1);
-	}
+    filePtr = fopen(fileName, "r");
+    if (filePtr == NULL)
+    {
+        perror("fopen");
+        return (-1);
+    }
 
-	errorPtr = Errors;
-	while (fgets(buffer, 1024, filePtr) != NULL)
-	{
-		lineCounter++;
-		if (lineCounter == (*errorPtr)->lineNumber)
-		{
-			modifiedLine = strdup(checkErrorMessage(buffer));
-			fputs(modifiedLine, tempFile);
-			free (modifiedLine);
-			errorPtr++;
-		}
-		else
-			fputs(buffer, tempFile);
-	}
+    tempFile = fopen("tmp.c", "w");
+    if (tempFile == NULL)
+    {
+        fclose(filePtr);
+        perror("fopen");
+        return (-1);
+    }
 
+    char *result;
+    errorPtr = Errors;
+    while ((result = fgets(buffer, 1024, filePtr)) != NULL)
+    {
+        lineCounter++;
+        printf("result - %s, LineCounter -> %d\n", result, lineCounter);
+        if (lineCounter == (*errorPtr)->lineNumber)
+        {
+            modifiedLine = checkErrorMessage((*errorPtr)->errorMessage, buffer);
+            fputs(modifiedLine, tempFile);
+            free(modifiedLine);
+            errorPtr++;
+        }
+        else
+            fputs(buffer, tempFile);
+    }
+    printf("Out\n");
 
+    fclose(tempFile);
+    fclose(filePtr);
 
-	fclose(tempFile);
-	fclose(filePtr);
-
-	return(1);
+    /* Delete Original Source File */
+    /**
+     * remove(fileName);
+     * rename("tmp.c", fileName);
+     *
+     * printf("Successfully rwrote the lines that have errors!\n");
+     */
+    return (1);
 }
 
 /**
@@ -228,7 +235,12 @@ int readWrite(char *fileName)
  * Return: modified line
  */
 
-char * checkErrorMessage(char buffer[])
+char *checkErrorMessage(char *errorMessage, char buffer[])
 {
-	return ("This line has an error");
+    if (strcmp(errorMessage, " trailing whitespace") == 0)
+    {
+        /*trailingWhiteSpace(buffer)*/
+        return (removeTrailingWhitespaces(buffer));
+    }
+    return ("This line has an error\n");
 }

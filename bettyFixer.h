@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <string.h>
 #include <sys/wait.h>
 #include <sys/types.h>
@@ -20,14 +21,17 @@ struct bettyError
 
 typedef struct bettyError bettyError;
 
-bettyError *Errors[100]; /* Can't have more than 100 errors. */
+extern bettyError *Errors[100]; /* Can't have more than 100 errors. */
 int runBetty(char *);
 void parseBettyOutput(int[]);
 bettyError *tokenizeErrorLine(char[]);
 
 void createPipe(int[]);
 /* int removeTrailingWhitespaces(const char *fileName); */
-int readWrite(char *fileName);
-char * checkErrorMessage(char buffer[]);
+int readWrite(char *);
+char *checkErrorMessage(char *, char[]);
+
+/* Functions to fill error messages. */
+char *removeTrailingWhitespaces(const char *);
 
 #endif
