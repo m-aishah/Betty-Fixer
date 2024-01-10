@@ -1,7 +1,0 @@
-/* Read read form pipe into buffer and write from buffer to the stdout. */
-char buff[1024];
-size_t charsRead;
-while (charsRead = read(pipeFd[0], buff, 1024))
-{
-    write(STDOUT_FILENO, buff, charsRead);
-}

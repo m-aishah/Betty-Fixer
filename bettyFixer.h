@@ -30,6 +30,7 @@ void createPipe(int[]);
 /* int removeTrailingWhitespaces(const char *fileName); */
 int readWrite(char *);
 char *checkErrorMessage(char *, char[]);
+void freeError();
 
 /* Functions to fill error messages. */
 char *removeTrailingWhitespaces(const char *);

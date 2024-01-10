@@ -3,22 +3,6 @@
 bettyError *Errors[100]; /* Can't have more than 100 errors. */
 
 /**
- * createPipe - Creates a new pipe.
- * @pipeFd: Array of integers to store the file descriptors of the new pipe.
- *
- * Return: void.
- */
-void createPipe(int pipeFd[])
-{
-    /* Create a pipe. */
-    if (pipe(pipeFd) == -1)
-    {
-        perror("pipe");
-        exit(EXIT_FAILURE);
-    }
-}
-
-/**
  * runBetty - Runs betty on a file and writes the output to the stdout (Needs some work)
  * @ fileName: The name of the file to run betty on
  *
@@ -55,14 +39,13 @@ int runBetty(char *fileName)
     }
     /* In the parent process*/
     wait(&status);
-    /* Print for testing */
-    printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>I am in the parent process\n");
     close(pipeFd[1]);
 
     parseBettyOutput(pipeFd);
 
     close(pipeFd[0]);
     readWrite(fileName);
+    freeError();
 
     return (1);
 }
@@ -89,7 +72,6 @@ void parseBettyOutput(int pipeFd[2])
             else
             {
                 line[strlen(line)] = '\0';
-                printf("\n>>>>>>>>>>>>>>>>>>>>>Line %d>>>>>,  %ld\n", lineCount, strlen(line));
                 write(1, line, strlen(line));
 
                 error = tokenizeErrorLine(line);
@@ -113,7 +95,6 @@ void parseBettyOutput(int pipeFd[2])
         /* Free error */
         exit(EXIT_FAILURE);
     }
-    // fixError(lineCount, Errors);
     printf("\nline Count = %d\n", lineCount);
 }
 
