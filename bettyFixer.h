@@ -22,17 +22,17 @@ struct bettyError
 typedef struct bettyError bettyError;
 
 extern bettyError *Errors[100]; /* Can't have more than 100 errors. */
-int runBetty(char *);
-void parseBettyOutput(int[]);
 bettyError *tokenizeErrorLine(char[]);
 
-void createPipe(int[]);
-/* int removeTrailingWhitespaces(const char *fileName); */
+int runBetty(char *);
 int readWrite(char *);
-char *checkErrorMessage(char *, char[]);
+
 void freeError();
+void createPipe(int[]);
+void parseBettyOutput(int[]);
 
 /* Functions to fill error messages. */
+char *checkErrorMessage(char *, char[]);
 char *removeTrailingWhitespaces(const char *);
 
 #endif
