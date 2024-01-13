@@ -31,7 +31,7 @@ void parseBettyOutput(int pipeFd[2])
 				line[strlen(line)] = '\0';
 				write(1, line, strlen(line));
 				error = tokenizeErrorLine(line);
-				if (error && error->errorType)
+				if (error)
 				{
 					Errors[i] = error;
 					/* Printing for testing */
