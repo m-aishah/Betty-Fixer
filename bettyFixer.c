@@ -1,6 +1,6 @@
 #include "bettyFixer.h"
 
-bettyError *Errors[100] = NULL; /* Can't have more than 100 errors. */
+bettyError *Errors[100]; /* Can't have more than 100 errors. */
 
 /**
 * runBetty - Runs betty on a file and writes the output
