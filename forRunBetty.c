@@ -29,17 +29,17 @@ void parseBettyOutput(int pipeFd[2])
 			else
 			{
 				line[strlen(line)] = '\0';
-				write(1, line, strlen(line));
+	//			write(1, line, strlen(line));
 				error = tokenizeErrorLine(line);
 				if (error)
 				{
 					Errors[i] = error;
 					/* Printing for testing */
-					printf("\n\tFileName:%s, %ld_", Errors[i]->fileName,
-							strlen(Errors[i]->fileName));
-					printf("\n\tlineNumber: %d", Errors[i]->lineNumber);
-					printf("\n\terrorType: %s", Errors[i]->errorType);
-					printf("\n\terrorMessage: %s", Errors[i]->errorMessage);
+		//			printf("\n\tFileName:%s, %ld_", Errors[i]->fileName,
+		//					strlen(Errors[i]->fileName));
+		//			printf("\n\tlineNumber: %d", Errors[i]->lineNumber);
+		//			printf("\n\terrorType: %s", Errors[i]->errorType);
+		//			printf("\n\terrorMessage: %s", Errors[i]->errorMessage);
 					i++;
 				}
 				/* Empty the line buffer */
@@ -68,7 +68,6 @@ bettyError *tokenizeErrorLine(char line[1024])
 
 	if (line[0] != 0)
 	{
-		printf("\n\tIn tokenize function: end%s\n", line);
 		error = malloc(sizeof(bettyError));
 		token = strtok(line, ":");
 		if (token != NULL)
@@ -79,9 +78,7 @@ bettyError *tokenizeErrorLine(char line[1024])
 		}
 		if (token != NULL)
 		{
-			printf("token before:%s, len= %ld\n", token, strlen(token));
 			error->lineNumber = atoi(token);
-			printf("DEBUG: converted line number: %d\n", error->lineNumber);
 			token = strtok(NULL, ":");
 		}
 		if (token != NULL)
@@ -134,9 +131,9 @@ int readWrite(char *fileName)
 	while ((result = fgets(buffer, 1024, filePtr)) != NULL)
 	{
 		lineCounter++;
-		printf("result - %s, LineCounter -> %d\n", result, lineCounter);
 		if (lineCounter == (*errorPtr)->lineNumber)
 		{
+			printf("\n\n>>>>>There is an error line %d, %d\n\n", lineCounter, (*errorPtr)->lineNumber);
 			modifiedLine = checkErrorMessage((*errorPtr)->errorMessage, buffer);
 			fputs(modifiedLine, tempFile);
 			free(modifiedLine);
@@ -144,8 +141,8 @@ int readWrite(char *fileName)
 		}
 		else
 			fputs(buffer, tempFile);
+		updateIndent(buffer);
 	}
-	printf("Out\n");
 	fclose(tempFile);
 	fclose(filePtr);
 

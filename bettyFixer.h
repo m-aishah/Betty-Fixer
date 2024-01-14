@@ -22,6 +22,7 @@ struct bettyError
 typedef struct bettyError bettyError;
 
 extern bettyError *Errors[100]; /* Can't have more than 100 errors. */
+extern int indent;
 
 int fixBettyError(char *);
 
@@ -32,9 +33,11 @@ int readWrite(char *);
 /* Helper Functions. */
 void freeError();
 void createPipe(int[]);
+int updateIndent(char []);
 
 /* Functions to Fix Error Messages. */
 char *checkErrorMessage(char *, char[]);
 char *removeTrailingWhitespaces(const char *);
+char *fixIndent(const char *orgStr);
 
 #endif
