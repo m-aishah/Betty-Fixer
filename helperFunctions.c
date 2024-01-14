@@ -40,20 +40,13 @@ void freeError(void)
 	/* free(Errors); */
 }
 
-/**
- * checkErrorMessage - a function to check tne betty error messages for a match
- * and carry out the corresponding action
- * @errorMessage: betty error message to be checked
- * @buffer: line to be compared to the error message
- * Return: modified line
- */
 
-char *checkErrorMessage(char *errorMessage, char buffer[])
+void checkIndent(char buffer[])
 {
-	if (strcmp(errorMessage, " trailing whitespace") == 0)
-	{
-		/*trailingWhiteSpace(buffer)*/
-		return (removeTrailingWhitespaces(buffer));
-	}
-	return ("This line has an error\n");
+	//if (for, while, if, else, switch, case) in buffer
+	// indent++
+	// slese if } in buffer
+	// Indent--
+	// else
+	// return
 }

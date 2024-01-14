@@ -21,6 +21,6 @@ int main(int argc, char *argv[])
 		printf("Usage: %s <file_name>\n", argv[0]);
 		return (1);
 	}
-	runBetty(argv[1]);
+	fixBettyError(argv[1]);
 	return (0);
 }

@@ -55,6 +55,50 @@ void parseBettyOutput(int pipeFd[2])
 	printf("\nline Count = %d\n", lineCount);
 }
 
+/**
+* tokenizeErrorLine - a function to tokenize each betty error message
+* @line: the error message/line to be tokenized
+* Return: a data structure (bettyError) containing
+* the different components of the error message
+*/
+bettyError *tokenizeErrorLine(char line[1024])
+{
+	bettyError *error;
+	char *token;
+
+	if (line[0] != 0)
+	{
+		printf("\n\tIn tokenize function: end%s\n", line);
+		error = malloc(sizeof(bettyError));
+		token = strtok(line, ":");
+		if (token != NULL)
+		{
+			error->fileName = strdup(token);
+			strcat(error->fileName, "\0");
+			token = strtok(NULL, ":");
+		}
+		if (token != NULL)
+		{
+			printf("token before:%s, len= %ld\n", token, strlen(token));
+			error->lineNumber = atoi(token);
+			printf("DEBUG: converted line number: %d\n", error->lineNumber);
+			token = strtok(NULL, ":");
+		}
+		if (token != NULL)
+		{
+			error->errorType = strdup(token);
+			strcat(error->errorType, "\0");
+			token = strtok(NULL, ":");
+		}
+		if (token != NULL)
+		{
+			error->errorMessage = strdup(token);
+			strcat(error->errorMessage, "\0");
+		}
+		return (error);
+	}
+	return (NULL);
+}
 
 /**
 * readWrite - a function to read and rewrite a file with modifications
