@@ -112,7 +112,11 @@ int readWrite(char *fileName)
 	char *modifiedLine, *result;
 
 	printf("\n\nIN READWRITE FUNCTION\n");
-
+	int i;
+	for (i = 0; i < 6; i++)
+	{
+		printf("\nLineNumber: %d\n", Errors[i]->lineNumber);
+	}
 	filePtr = fopen(fileName, "r");
 	if (filePtr == NULL)
 	{
@@ -133,11 +137,22 @@ int readWrite(char *fileName)
 		lineCounter++;
 		if (lineCounter == (*errorPtr)->lineNumber)
 		{
-			printf("\n\n>>>>>There is an error line %d, %d\n\n", lineCounter, (*errorPtr)->lineNumber);
-			modifiedLine = checkErrorMessage((*errorPtr)->errorMessage, buffer);
-			fputs(modifiedLine, tempFile);
-			free(modifiedLine);
-			errorPtr++;
+			/* Copy of the original line */
+			char bufferCopy[1024];
+			strcpy(bufferCopy, buffer);
+
+			/* Apply modifications for each error on the line. */
+			while((*errorPtr)->lineNumber == lineCounter)
+			{
+				modifiedLine = checkErrorMessage((*errorPtr)->errorMessage, bufferCopy);
+				/* Update the copy for the next iteration. */
+				strcpy(bufferCopy, modifiedLine);
+				/* Free the memory for the modified line. */
+				free(modifiedLine);
+				/* Move to the next error */
+				errorPtr++;
+			}
+			fputs(bufferCopy, tempFile);
 		}
 		else
 			fputs(buffer, tempFile);
