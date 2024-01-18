@@ -19,6 +19,10 @@ char *checkErrorMessage(char *errorMessage, char buffer[])
 	{
 		return (fixIndent(buffer));
 	}
+	else if (errorMessage, " space required before the open parenthesis '('")
+	{
+		return (fixSpaceBeforeBracket(buffer));
+	}
 	return ("This line has an error\n");
 }
 
@@ -92,4 +96,42 @@ char *fixIndent(const char *orgStr)
 		correctedStr[correctedIndx++] = orgStr[orgIndx++];
 
 	return (correctedStr);
+}
+
+char *fixSpaceBeforeBracket(const char *str)
+{
+	int modStrIndex, strIndex, len;
+	char *modifiedStr;
+	if (str == NULL)
+		return (NULL); /* Handle NULL input string. */
+
+	len = strlen(str);
+	modifiedStr = (char *)malloc((len * 1.5) * sizeof(char *));
+	if (modifiedStr == NULL)
+	{
+		return (NULL); /* Memory Allocation Failed. */
+	}	
+	
+	modStrIndex = 0;
+	strIndex = 0;
+/**
+	while (strIndex < len)
+	{
+		modifiedStr[modStrIndex] = str[strIndex];
+		modStrIndex++;
+		strIndex++;
+		if (str[strIndex] != ' ' && strIndex + 1 < len && str[strIndex + 1] == '(')
+			modifiedStr[modStrIndex] = ' ';
+	}
+*/
+	for (int strIndex = 0; strIndex < len; strIndex++)
+	{
+		modifiedStr[modStrIndex++] = str[strIndex];
+		if (strIndex + 1 < len && str[strIndex] != ' ' && str[strIndex + 1] == '(')
+		{
+			modifiedStr[modStrIndex++] = ' ';
+		}
+	}
+	return (modifiedStr);
+
 }
