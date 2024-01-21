@@ -28,7 +28,7 @@ int fixBettyError(char *);
 
 void parseBettyOutput(int[]);
 bettyError *tokenizeErrorLine(char[]);
-int readWrite(char *);
+int correctAndReplaceFile(char *);
 
 /* Helper Functions. */
 void freeError();

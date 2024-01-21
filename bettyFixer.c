@@ -11,6 +11,7 @@ int fixBettyError(char *fileName)
 {
 	int pipeFd[2], pid, status;
 
+	/* Create a pipe. */
 	createPipe(pipeFd);
 	/* Run betty in a new process. */
 	pid = fork();
@@ -28,17 +29,21 @@ int fixBettyError(char *fileName)
 		/* Duplicate stdout as pipe write file descriptor.*/
 		dup2(pipeFd[1], STDOUT_FILENO);
 		close(pipeFd[1]);
+		/* Run betty on file. */
 		execlp("betty", "betty", fileName, NULL);
 		perror("exec");
 		exit(EXIT_FAILURE);
 	}
-	/* In the parent process*/
+	/* In the parent process. */
 	wait(&status);
 	close(pipeFd[1]);
 
+	/* Parse output of running betty stored in pipe. */
 	parseBettyOutput(pipeFd);
 	close(pipeFd[0]);
-	readWrite(fileName);
+	/* Fix error messages in the file. */
+	correctAndReplaceFile(fileName);
+	/* Free structure array. */
 	freeError();
 	return (1);
 }

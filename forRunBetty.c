@@ -3,10 +3,11 @@
 bettyError *Errors[100]; /* Can't have more than 100 errors. */
 
 /**
-* parseBettyOutput - a function to parse the output of runBetty on a file
-* @pipeFd: the output to be parsed
+* parseBettyOutput - Parse error messages from betty in a pipe.
+* @pipeFd: Pipe file descriptor arrays (where errors are to be read from).
+*
+* Return: void.
 */
-
 void parseBettyOutput(int pipeFd[2])
 {
 	char c;
@@ -15,10 +16,13 @@ void parseBettyOutput(int pipeFd[2])
 	int i = 0;
 	bettyError *error;
 
+	/* Read error from pipe character by character. */
 	while ((charsRead = read(pipeFd[0], &c, 1)) > 0)
 	{
+		/* Keep count of each line. */
+		// Need to use an alternative way of reading each line. This is not fullproof.
 		if (c == '\n')
-		lineCount++;
+			lineCount++;
 
 		if (lineCount > 1)
 		{
@@ -28,18 +32,14 @@ void parseBettyOutput(int pipeFd[2])
 			}
 			else
 			{
+				/* Store each line in the line buffer. */
 				line[strlen(line)] = '\0';
-	//			write(1, line, strlen(line));
+				/* Tokenize each line into respective parts. */
 				error = tokenizeErrorLine(line);
+				/* Store tokeized error into errors array. */
 				if (error)
 				{
 					Errors[i] = error;
-					/* Printing for testing */
-		//			printf("\n\tFileName:%s, %ld_", Errors[i]->fileName,
-		//					strlen(Errors[i]->fileName));
-		//			printf("\n\tlineNumber: %d", Errors[i]->lineNumber);
-		//			printf("\n\terrorType: %s", Errors[i]->errorType);
-		//			printf("\n\terrorMessage: %s", Errors[i]->errorMessage);
 					i++;
 				}
 				/* Empty the line buffer */
@@ -56,16 +56,22 @@ void parseBettyOutput(int pipeFd[2])
 }
 
 /**
-* tokenizeErrorLine - a function to tokenize each betty error message
-* @line: the error message/line to be tokenized
+* tokenizeErrorLine - Tokenize each line of betty error message.
+* @line: The error message/line to be tokenized.
+*
 * Return: a data structure (bettyError) containing
-* the different components of the error message
+*			the different components of the error message.
 */
 bettyError *tokenizeErrorLine(char line[1024])
 {
 	bettyError *error;
 	char *token;
 
+	/**
+	 * Tokenize the line with : as the delimeter
+	 * split the line into file name, line number,
+	 * error type and error message itself.
+	 */
 	if (line[0] != 0)
 	{
 		error = malloc(sizeof(bettyError));
@@ -98,12 +104,12 @@ bettyError *tokenizeErrorLine(char line[1024])
 }
 
 /**
-* readWrite - a function to read and rewrite a file with modifications
-* @fileName: file to be read
+* correctAndReplaceFile - Rewrites a file with modifications.
+* @fileName: Th enam eof the file to be read.
+*
 * Return: 1 for success, otherwise -1
 */
-
-int readWrite(char *fileName)
+int correctAndReplaceFile(char *fileName)
 {
 	FILE *filePtr, *tempFile;
 	int lineCounter = 0;
@@ -111,19 +117,21 @@ int readWrite(char *fileName)
 	char buffer[1024];
 	char *modifiedLine, *result;
 
-	printf("\n\nIN READWRITE FUNCTION\n");
-	int i;
-	for (i = 0; i < 6; i++)
-	{
-		printf("\nLineNumber: %d\n", Errors[i]->lineNumber);
-	}
+//	printf("\n\nIN READWRITE FUNCTION\n");
+//	int i;
+//	for (i = 0; i < 6; i++)
+//	{
+//		printf("\nLineNumber: %d\n", Errors[i]->lineNumber);
+//	}
+	/*Open the file */
 	filePtr = fopen(fileName, "r");
 	if (filePtr == NULL)
 	{
-		perror("fopen");
+		perror("fopen"); /* Handle fopen error. */
 		return (-1);
 	}
 
+	/* Open temporary file for writing. */
 	tempFile = fopen("tmp.c", "w");
 	if (tempFile == NULL)
 	{
@@ -132,17 +140,21 @@ int readWrite(char *fileName)
 		return (-1);
 	}
 	errorPtr = Errors;
+	/* Read each line from the file. */
 	while ((result = fgets(buffer, 1024, filePtr)) != NULL)
 	{
 		lineCounter++;
+		/* Check that the current line does not have an error. */
 		if (lineCounter == (*errorPtr)->lineNumber)
 		{
-			/* Copy of the original line */
+			/* If there is an error. */
+			/* Make a copy of the line with the error. */
 			char bufferCopy[1024];
+
 			strcpy(bufferCopy, buffer);
 
 			/* Apply modifications for each error on the line. */
-			while((*errorPtr)->lineNumber == lineCounter)
+			while ((*errorPtr)->lineNumber == lineCounter)
 			{
 				modifiedLine = checkErrorMessage((*errorPtr)->errorMessage, bufferCopy);
 				/* Update the copy for the next iteration. */
@@ -152,10 +164,16 @@ int readWrite(char *fileName)
 				/* Move to the next error */
 				errorPtr++;
 			}
+			/* Write corrected line into temporary file. */
 			fputs(bufferCopy, tempFile);
 		}
 		else
+			/**
+			 * If there is no error,
+			 * write the line dirrectly into temp file.
+			 */
 			fputs(buffer, tempFile);
+		/* Update the indent variable if necessary. */
 		updateIndent(buffer);
 	}
 	fclose(tempFile);

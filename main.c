@@ -1,19 +1,12 @@
 #include "bettyFixer.h"
 
 /**
- * Future Updates: - updates we plan to implement
- * Implement running on multiple files.
- * Implement doc errors (for now we are taking care
- * of just betty syntax lint errors)
- */
-
-/**
  * main - Entry point.
  * @argc: The number of arguments.
  * @argv: Arguments
- * Returns: 0 on success.
+ *
+ * Return: 0 on success, else 1.
  */
-
 int main(int argc, char *argv[])
 {
 	if (argc < 2)
@@ -24,3 +17,12 @@ int main(int argc, char *argv[])
 	fixBettyError(argv[1]);
 	return (0);
 }
+
+
+/**
+ * Future Updates: - updates we plan to implement
+ * Implement running on multiple files.
+ * Implement doc errors (for now we are taking care
+ * of just betty syntax lint errors)
+ * Use threads to increase speed.
+ */

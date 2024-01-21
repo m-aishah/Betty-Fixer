@@ -20,7 +20,7 @@ void createPipe(int pipeFd[])
 }
 
 /**
- * freeError - a function to free Error
+ * freeError - a function to free Errors (array of structures).
  */
 
 void freeError(void)
@@ -42,6 +42,12 @@ void freeError(void)
 }
 
 
+/**
+ * updateIndent - Updates the indent variable.
+ *		to keep track of the number of tabs for required on a line.
+ * @buffer: The line.
+ * Return: The number of ndents for the line.
+ */
 int updateIndent(char buffer[])
 {
 	int i, len;
@@ -49,7 +55,7 @@ int updateIndent(char buffer[])
 
 	len = sizeof(keys) / sizeof(keys[0]);
 
-	for(i = 0; i < len; i++)
+	for (i = 0; i < len; i++)
 	{
 		if (strstr(buffer, keys[i]) != NULL)
 			indent++;
