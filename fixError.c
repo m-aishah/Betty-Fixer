@@ -1,4 +1,5 @@
 #include "bettyFixer.h"
+int indent = 1;
 
 /**
  * checkErrorMessage - a function to check tne betty error messages for a match
@@ -12,8 +13,11 @@ char *checkErrorMessage(char *errorMessage, char buffer[])
 {
 	if (strcmp(errorMessage, " trailing whitespace") == 0)
 	{
-		/*trailingWhiteSpace(buffer)*/
 		return (removeTrailingWhitespaces(buffer));
+	}
+	else if (errorMessage, " code indent should use tabs where possible")
+	{
+		return (fixIndent(buffer));
 	}
 	return ("This line has an error\n");
 }
@@ -41,10 +45,9 @@ char *removeTrailingWhitespaces(const char *str)
 	{
 		lastNonWhitespaceIndex--;
 	}
-
+	
 	/* Allocate memory for the corrected string */
-	char *correctedStr = (char *)malloc(lastNonWhitespaceIndex + 2);
-	/* +2 to include the null terminator */
+	char *correctedStr = (char *)malloc(lastNonWhitespaceIndex + 1);
 	if (correctedStr == NULL)
 	{
 		return (NULL); /* Memory allocation failed */
@@ -53,6 +56,40 @@ char *removeTrailingWhitespaces(const char *str)
 	/* Copy the non-whitespace portion of the string to the new buffer */
 	strncpy(correctedStr, str, lastNonWhitespaceIndex + 1);
 	correctedStr[lastNonWhitespaceIndex + 1] = '\n';
+
+	return (correctedStr);
+}
+
+char *fixIndent(const char *orgStr)
+{
+	int i, len;
+	int orgIndx = 0;
+	int  correctedIndx = 0;
+	char *correctedStr;
+
+	if (orgStr == NULL)
+	{
+		return (NULL); /* Handle NULL input string. */
+	}
+
+	len = strlen(orgStr);
+
+	correctedStr = (char *)malloc(len + indent);
+	if (correctedStr == NULL)
+	{
+		return (NULL); /* Memory Allocation Failed. */
+	}
+
+	while (orgStr[orgIndx] == ' ' || orgStr[orgIndx] == '\t')
+		orgIndx++;
+
+	for ( i = 0; i < indent; i++)
+	{
+		correctedStr[correctedIndx++] = '\t';
+	}
+
+	while(orgIndx < len)
+		correctedStr[correctedIndx++] = orgStr[orgIndx++];
 
 	return (correctedStr);
 }

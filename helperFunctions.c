@@ -1,6 +1,7 @@
 #include "bettyFixer.h"
 
 bettyError *Errors[100]; /* Can't have more than 100 errors. */
+int indent;
 
 /**
  * createPipe - Creates a new pipe.
@@ -41,12 +42,21 @@ void freeError(void)
 }
 
 
-void checkIndent(char buffer[])
+int updateIndent(char buffer[])
 {
-	//if (for, while, if, else, switch, case) in buffer
-	// indent++
-	// slese if } in buffer
-	// Indent--
-	// else
-	// return
+	int i, len;
+	const char *keys[] = {"for", "while", "if", "else", "switch", "case"};
+
+	len = sizeof(keys) / sizeof(keys[0]);
+
+	for(i = 0; i < len; i++)
+	{
+		if (strstr(buffer, keys[i]) != NULL)
+			indent++;
+	}
+
+	if (strchr(buffer, '}') != NULL)
+		indent--;
+
+	return (indent);
 }

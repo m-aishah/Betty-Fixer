@@ -29,17 +29,17 @@ void parseBettyOutput(int pipeFd[2])
 			else
 			{
 				line[strlen(line)] = '\0';
-				write(1, line, strlen(line));
+	//			write(1, line, strlen(line));
 				error = tokenizeErrorLine(line);
 				if (error)
 				{
 					Errors[i] = error;
 					/* Printing for testing */
-					printf("\n\tFileName:%s, %ld_", Errors[i]->fileName,
-							strlen(Errors[i]->fileName));
-					printf("\n\tlineNumber: %d", Errors[i]->lineNumber);
-					printf("\n\terrorType: %s", Errors[i]->errorType);
-					printf("\n\terrorMessage: %s", Errors[i]->errorMessage);
+		//			printf("\n\tFileName:%s, %ld_", Errors[i]->fileName,
+		//					strlen(Errors[i]->fileName));
+		//			printf("\n\tlineNumber: %d", Errors[i]->lineNumber);
+		//			printf("\n\terrorType: %s", Errors[i]->errorType);
+		//			printf("\n\terrorMessage: %s", Errors[i]->errorMessage);
 					i++;
 				}
 				/* Empty the line buffer */
@@ -68,7 +68,6 @@ bettyError *tokenizeErrorLine(char line[1024])
 
 	if (line[0] != 0)
 	{
-		printf("\n\tIn tokenize function: end%s\n", line);
 		error = malloc(sizeof(bettyError));
 		token = strtok(line, ":");
 		if (token != NULL)
@@ -79,9 +78,7 @@ bettyError *tokenizeErrorLine(char line[1024])
 		}
 		if (token != NULL)
 		{
-			printf("token before:%s, len= %ld\n", token, strlen(token));
 			error->lineNumber = atoi(token);
-			printf("DEBUG: converted line number: %d\n", error->lineNumber);
 			token = strtok(NULL, ":");
 		}
 		if (token != NULL)
@@ -115,7 +112,11 @@ int readWrite(char *fileName)
 	char *modifiedLine, *result;
 
 	printf("\n\nIN READWRITE FUNCTION\n");
-
+	int i;
+	for (i = 0; i < 6; i++)
+	{
+		printf("\nLineNumber: %d\n", Errors[i]->lineNumber);
+	}
 	filePtr = fopen(fileName, "r");
 	if (filePtr == NULL)
 	{
@@ -134,18 +135,29 @@ int readWrite(char *fileName)
 	while ((result = fgets(buffer, 1024, filePtr)) != NULL)
 	{
 		lineCounter++;
-		printf("result - %s, LineCounter -> %d\n", result, lineCounter);
 		if (lineCounter == (*errorPtr)->lineNumber)
 		{
-			modifiedLine = checkErrorMessage((*errorPtr)->errorMessage, buffer);
-			fputs(modifiedLine, tempFile);
-			free(modifiedLine);
-			errorPtr++;
+			/* Copy of the original line */
+			char bufferCopy[1024];
+			strcpy(bufferCopy, buffer);
+
+			/* Apply modifications for each error on the line. */
+			while((*errorPtr)->lineNumber == lineCounter)
+			{
+				modifiedLine = checkErrorMessage((*errorPtr)->errorMessage, bufferCopy);
+				/* Update the copy for the next iteration. */
+				strcpy(bufferCopy, modifiedLine);
+				/* Free the memory for the modified line. */
+				free(modifiedLine);
+				/* Move to the next error */
+				errorPtr++;
+			}
+			fputs(bufferCopy, tempFile);
 		}
 		else
 			fputs(buffer, tempFile);
+		updateIndent(buffer);
 	}
-	printf("Out\n");
 	fclose(tempFile);
 	fclose(filePtr);
 
