@@ -11,17 +11,37 @@ int indent = 1;
  */
 char *checkErrorMessage(char *errorMessage, char buffer[])
 {
+	printf("Error Message -> %s\n", errorMessage);
 	/* Check if error is trailing whitespace error. */
 	if (strcmp(errorMessage, " trailing whitespace") == 0)
 	{
 		return (removeTrailingWhitespaces(buffer));
 	}
 	/* Check if error is code indent error. */
-	else if (errorMessage, " code indent should use tabs where possible")
+	else if (strcmp(errorMessage, " code indent should use tabs where possible") == 0)
 	{
 		return (fixIndent(buffer));
 	}
-	return ("This line has an error\n");
+	else if (strcmp(errorMessage, " space required before the open parenthesis '('") == 0)
+	{
+		return (fixSpaceBeforeBracket(buffer));
+	}
+	/* Check if error is spaces around operators. */
+	else if (strstr(errorMessage, " spaces required around that") != NULL)
+	{
+		return(addSpacesAroundOperators(buffer));
+	}
+	else if (strstr(errorMessage, " spaces preferred around that") != NULL)
+	{
+		return(addSpacesAroundOperators(buffer));
+	}
+	/* Check if error is missing line after declaration error. */
+	else if (strcmp(errorMessage, " Missing a blank line after declarations") == 0)
+	{
+		return(addLineAfterDeclaration(buffer));
+	}
+
+	return (NULL);
 }
 
 /**
@@ -112,4 +132,42 @@ char *fixIndent(const char *orgStr)
 		correctedStr[correctedIndx++] = orgStr[orgIndx++];
 
 	return (correctedStr);
+}
+
+char *fixSpaceBeforeBracket(const char *str)
+{
+	int modStrIndex, strIndex, len;
+	char *modifiedStr;
+	if (str == NULL)
+		return (NULL); /* Handle NULL input string. */
+
+	len = strlen(str);
+	modifiedStr = (char *)malloc((len * 1.5) * sizeof(char *));
+	if (modifiedStr == NULL)
+	{
+		return (NULL); /* Memory Allocation Failed. */
+	}	
+	
+	modStrIndex = 0;
+	strIndex = 0;
+/**
+	while (strIndex < len)
+	{
+		modifiedStr[modStrIndex] = str[strIndex];
+		modStrIndex++;
+		strIndex++;
+		if (str[strIndex] != ' ' && strIndex + 1 < len && str[strIndex + 1] == '(')
+			modifiedStr[modStrIndex] = ' ';
+	}
+*/
+	for (int strIndex = 0; strIndex < len; strIndex++)
+	{
+		modifiedStr[modStrIndex++] = str[strIndex];
+		if (strIndex + 1 < len && str[strIndex] != ' ' && str[strIndex + 1] == '(')
+		{
+			modifiedStr[modStrIndex++] = ' ';
+		}
+	}
+	return (modifiedStr);
+
 }
