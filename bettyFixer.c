@@ -37,7 +37,7 @@ int fixBettyError(char *fileName)
 	/* In the parent process. */
 	wait(&status);
 	close(pipeFd[1]);
-	/* Parse output of running betty stored in pipe. */
+	/* Parse output of running betty that is stored in pipe. */
 	parseBettyOutput(pipeFd);
 	close(pipeFd[0]);
 	/* Fix error messages in the file. */

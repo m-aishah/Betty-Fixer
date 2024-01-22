@@ -11,36 +11,32 @@ int indent = 1;
  */
 char *checkErrorMessage(char *errorMessage, char buffer[])
 {
-	printf("Error Message -> %s\n", errorMessage);
 	/* Check if error is trailing whitespace error. */
 	if (strcmp(errorMessage, " trailing whitespace") == 0)
-	{
 		return (removeTrailingWhitespaces(buffer));
-	}
+	
 	/* Check if error is code indent error. */
 	else if (strcmp(errorMessage, " code indent should use tabs where possible") == 0)
-	{
 		return (fixIndent(buffer));
-	}
+
+	else if(strcmp(errorMessage, " please, no spaces at the start of a line") == 0)
+		return(fixIndent(buffer));
+	
+	/* Check if error is space required before parenthesis. */
 	else if (strcmp(errorMessage, " space required before the open parenthesis '('") == 0)
-	{
 		return (fixSpaceBeforeBracket(buffer));
-	}
+	
 	/* Check if error is spaces around operators. */
 	else if (strstr(errorMessage, " spaces required around that") != NULL)
-	{
 		return(addSpacesAroundOperators(buffer));
-	}
+	
 	else if (strstr(errorMessage, " spaces preferred around that") != NULL)
-	{
 		return(addSpacesAroundOperators(buffer));
-	}
+	
 	/* Check if error is missing line after declaration error. */
 	else if (strcmp(errorMessage, " Missing a blank line after declarations") == 0)
-	{
 		return(addLineAfterDeclaration(buffer));
-	}
-
+	
 	return (NULL);
 }
 
@@ -57,10 +53,8 @@ char *removeTrailingWhitespaces(const char *orgStr)
 
 	/* Handle NULL input string. */
 	if (orgStr == NULL)
-	{
 		return (NULL);
-	}
-
+	
 	/* Get the length of the string. */
 	length = strlen(orgStr);
 
@@ -74,9 +68,9 @@ char *removeTrailingWhitespaces(const char *orgStr)
 
 	/* Allocate memory for the corrected string. */
 	correctedStr = (char *)malloc(lastNonWhitespaceIndex + 1);
-
 	if (correctedStr == NULL)
 	{
+		perror("malloc");
 		return (NULL); /* Memory allocation failed */
 	}
 
@@ -102,10 +96,8 @@ char *fixIndent(const char *orgStr)
 
 	/* Handle NULL input string. */
 	if (orgStr == NULL)
-	{
 		return (NULL);
-	}
-
+	
 	/* Get the length of the string. */
 	len = strlen(orgStr);
 
@@ -114,6 +106,7 @@ char *fixIndent(const char *orgStr)
 	/* Handle memory allocation failure. */
 	if (correctedStr == NULL)
 	{
+		perror("malloc");
 		return (NULL);
 	}
 
@@ -123,10 +116,8 @@ char *fixIndent(const char *orgStr)
 
 	/* Add required number of tabs (indent) to start of correctedString. */
 	for (i = 0; i < indent; i++)
-	{
 		correctedStr[correctedIndx++] = '\t';
-	}
-
+	
 	/* Copy the rest of orgString into the correctedString. */
 	while (orgIndx < len)
 		correctedStr[correctedIndx++] = orgStr[orgIndx++];

@@ -22,12 +22,12 @@ void createPipe(int pipeFd[])
 /**
  * freeError - a function to free Errors (array of structures).
  */
-
 void freeError(void)
 {
 	bettyError *ptr;
 	int i = 0;
 
+	/* Free each element of each structure in the Errors Array. */
 	while (Errors[i])
 	{
 		ptr = Errors[i];

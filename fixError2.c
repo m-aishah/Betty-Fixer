@@ -10,6 +10,7 @@ char *addSpacesAroundOperators(const char* orgStr)
 {
 	size_t len, resultIndex, i;
 	char * correctedStr;
+	
 	/* Handle NULL input String. */
 	if (orgStr == NULL)
 		return (NULL);

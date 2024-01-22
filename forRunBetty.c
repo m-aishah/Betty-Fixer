@@ -1,6 +1,5 @@
 #include "bettyFixer.h"
 
-#define MAX_LINE_LENGTH 1024
 bettyError *Errors[100]; /* Can't have more than 100 errors. */
 
 /**
@@ -15,19 +14,26 @@ void parseBettyOutput(int pipeFd[2])
 	int lineCount = 0;
 	int j = 0;
 
-	initializeErrorsArray();
+	/* Initialize Global Errors Array. */
+	/* initializeErrorsArray(); */
 
+	/* Duplicate stdin as read end of pipe. */
 	dup2(pipeFd[0], STDIN_FILENO);
 
+	/* Read from stdin (pipe) line by line. */
 	while (fgets(line, MAX_LINE_LENGTH, stdin) != NULL)
 	{
+		/* Keep track of line number. */
 		lineCount++;
 		
+		/* Tokenize line starting from line 3. */
 		if (lineCount > 2)
 		{
+			/* Replace newline character at the end of the line. */
 			line[strlen(line) - 1] = '\0';
 			bettyError *error = tokenizeErrorLine(line);
 
+			/* Set tokenized line as one of the structures in Erors array. */
 			if (error != NULL)
 			{
 				Errors[j] = error;
@@ -35,59 +41,6 @@ void parseBettyOutput(int pipeFd[2])
 			}
 		}
 	}
-}
-
-/**
-* parseBettyOutput - Parse error messages from betty in a pipe.
-* @pipeFd: Pipe file descriptor arrays (where errors are to be read from).
-*
-* Return: void.
-*/
-void parseBettyOutput2(int pipeFd[2])
-{
-	char c;
-	char line[1024] = {0};
-	int charsRead = 0, totalCharsRead = 0, lineCount = 0;
-	int i = 0;
-	bettyError *error;
-
-	/* Read error from pipe character by character. */
-	while ((charsRead = read(pipeFd[0], &c, 1)) > 0)
-	{
-		/* Keep count of each line. */
-		// Need to use an alternative way of reading each line. This is not fullproof.
-		if (c == '\n')
-			lineCount++;
-
-		if (lineCount > 1)
-		{
-			if (c != '\n')
-			{
-				line[strlen(line)] = c;
-			}
-			else
-			{
-				/* Store each line in the line buffer. */
-				line[strlen(line)] = '\0';
-				/* Tokenize each line into respective parts. */
-				error = tokenizeErrorLine(line);
-				/* Store tokeized error into errors array. */
-				if (error)
-				{
-					Errors[i] = error;
-					i++;
-				}
-				/* Empty the line buffer */
-				memset(line, 0, sizeof(line));
-			}
-		}
-	}
-	if (lineCount == 2)
-	{
-		/* Free error */
-		exit(EXIT_FAILURE);
-	}
-	printf("\nline Count = %d\n", lineCount);
 }
 
 /**
@@ -99,17 +52,24 @@ void parseBettyOutput2(int pipeFd[2])
 */
 bettyError *tokenizeErrorLine(char line[1024])
 {
-	bettyError *error;
 	char *token;
+
+	/* Allocate memory for error struct. */
+	bettyError *error = malloc(sizeof(bettyError));
+	/* Handle memory allocation failure. */
+	if (error == NULL)
+	{
+		perror("malloc");
+		exit(EXIT_FAILURE);
+	}
 
 	/**
 	 * Tokenize the line with : as the delimeter
 	 * split the line into file name, line number,
 	 * error type and error message itself.
 	 */
-	if (line[0] != 0)
+	if (line)
 	{
-		error = malloc(sizeof(bettyError));
 		token = strtok(line, ":");
 		if (token != NULL)
 		{
@@ -135,6 +95,7 @@ bettyError *tokenizeErrorLine(char line[1024])
 		}
 		return (error);
 	}
+	free(error);
 	return (NULL);
 }
 
@@ -149,15 +110,9 @@ int correctAndReplaceFile(char *fileName)
 	FILE *filePtr, *tempFile;
 	int lineCounter = 0;
 	bettyError **errorPtr;
-	char buffer[1024];
+	char buffer[MAX_LINE_LENGTH];
 	char *modifiedLine, *result;
 
-//	printf("\n\nIN READWRITE FUNCTION\n");
-//	int i;
-//	for (i = 0; i < 2; i++)
-//	{
-///		printf("\nLineNumber: %d\n", Errors[i]->lineNumber);
-//	}
 	/*Open the file */
 	filePtr = fopen(fileName, "r");
 	if (filePtr == NULL)
@@ -174,6 +129,7 @@ int correctAndReplaceFile(char *fileName)
 		perror("fopen");
 		return (-1);
 	}
+	/* Set pointer to the start of the Errors array. */
 	errorPtr = Errors;
 	/* Read each line from the file. */
 	while ((result = fgets(buffer, 1024, filePtr)) != NULL)
@@ -185,7 +141,6 @@ int correctAndReplaceFile(char *fileName)
 			/* If there is an error. */
 			/* Make a copy of the line with the error. */
 			char bufferCopy[1024];
-
 			strcpy(bufferCopy, buffer);
 
 			/* Apply modifications for each error on the line. */

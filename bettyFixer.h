@@ -11,6 +11,17 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#define MAX_LINE_LENGTH 1024
+
+/**
+ * struct bettyError - Container for each line of a betty error.
+ * @fileName: The name of the file with the error.
+ * @lineNumber: The line number the error is on.
+ * @errorType: Tpe of error (WARNING/ ERROR).
+ * @errorMessage: The error message itself.
+ *
+ * Description: Use this struct to store parts that make up a line of betty error.
+ */
 struct bettyError
 {
     char *fileName;
@@ -31,16 +42,17 @@ bettyError *tokenizeErrorLine(char[]);
 int correctAndReplaceFile(char *);
 
 /* Helper Functions. */
-void freeError();
+void freeError(void);
 void createPipe(int[]);
 int updateIndent(char []);
-void initializeErrorsArray();
+void initializeErrorsArray(void);
 
 /* Functions to Fix Error Messages. */
 char *checkErrorMessage(char *, char[]);
 char *removeTrailingWhitespaces(const char *);
-char *fixIndent(const char *orgStr);
-char *fixSpaceBeforeBracket(const char *str);
-char *addSpacesAroundOperators(const char* orgStr);
-char *addLineAfterDeclaration(const char *orgStr);
+char *fixIndent(const char *);
+char *fixSpaceBeforeBracket(const char *);
+char *addSpacesAroundOperators(const char *);
+char *addLineAfterDeclaration(const char *);
+
 #endif
