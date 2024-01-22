@@ -1,5 +1,6 @@
 #include "bettyFixer.h"
 
+#define MAX_LINE_LENGTH 1024
 bettyError *Errors[100]; /* Can't have more than 100 errors. */
 
 /**
@@ -9,6 +10,40 @@ bettyError *Errors[100]; /* Can't have more than 100 errors. */
 * Return: void.
 */
 void parseBettyOutput(int pipeFd[2])
+{
+	char line[MAX_LINE_LENGTH];
+	int lineCount = 0;
+	int j = 0;
+
+	initializeErrorsArray();
+
+	dup2(pipeFd[0], STDIN_FILENO);
+
+	while (fgets(line, MAX_LINE_LENGTH, stdin) != NULL)
+	{
+		lineCount++;
+		
+		if (lineCount > 2)
+		{
+			line[strlen(line) - 1] = '\0';
+			bettyError *error = tokenizeErrorLine(line);
+
+			if (error != NULL)
+			{
+				Errors[j] = error;
+				j++;
+			}
+		}
+	}
+}
+
+/**
+* parseBettyOutput - Parse error messages from betty in a pipe.
+* @pipeFd: Pipe file descriptor arrays (where errors are to be read from).
+*
+* Return: void.
+*/
+void parseBettyOutput2(int pipeFd[2])
 {
 	char c;
 	char line[1024] = {0};
@@ -119,9 +154,9 @@ int correctAndReplaceFile(char *fileName)
 
 //	printf("\n\nIN READWRITE FUNCTION\n");
 //	int i;
-//	for (i = 0; i < 6; i++)
+//	for (i = 0; i < 2; i++)
 //	{
-//		printf("\nLineNumber: %d\n", Errors[i]->lineNumber);
+///		printf("\nLineNumber: %d\n", Errors[i]->lineNumber);
 //	}
 	/*Open the file */
 	filePtr = fopen(fileName, "r");

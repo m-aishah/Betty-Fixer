@@ -66,3 +66,10 @@ int updateIndent(char buffer[])
 
 	return (indent);
 }
+
+
+void initializeErrorsArray() {
+    for (int i = 0; i < 100; ++i) {
+       Errors[i] = NULL;
+    }
+}
