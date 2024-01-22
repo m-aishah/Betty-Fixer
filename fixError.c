@@ -26,6 +26,16 @@ char *checkErrorMessage(char *errorMessage, char buffer[])
 	{
 		return (fixSpaceBeforeBracket(buffer));
 	}
+	/* Check if error is spaces around operators. */
+	else if (strstr(errorMessage, "spaces required around that") != NULL)
+	{
+		return(addSpacesAroundOperators(buffer));
+	}
+	else if (strstr(errorMessage, " spaces preferred around that") != NULL)
+	{
+		return(addSpacesAroundOperators(buffer));
+	}
+
 	return (NULL);
 }
 
