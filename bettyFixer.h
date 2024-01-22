@@ -34,6 +34,7 @@ int correctAndReplaceFile(char *);
 void freeError();
 void createPipe(int[]);
 int updateIndent(char []);
+void initializeErrorsArray();
 
 /* Functions to Fix Error Messages. */
 char *checkErrorMessage(char *, char[]);
