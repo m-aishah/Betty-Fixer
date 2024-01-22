@@ -27,13 +27,18 @@ char *checkErrorMessage(char *errorMessage, char buffer[])
 		return (fixSpaceBeforeBracket(buffer));
 	}
 	/* Check if error is spaces around operators. */
-	else if (strstr(errorMessage, "spaces required around that") != NULL)
+	else if (strstr(errorMessage, " spaces required around that") != NULL)
 	{
 		return(addSpacesAroundOperators(buffer));
 	}
 	else if (strstr(errorMessage, " spaces preferred around that") != NULL)
 	{
 		return(addSpacesAroundOperators(buffer));
+	}
+	/* Check if error is missing line after declaration error. */
+	else if (strcmp(errorMessage, " Missing a blank line after declarations") == 0)
+	{
+		return(addLineAfterDeclaration(buffer));
 	}
 
 	return (NULL);
