@@ -157,10 +157,13 @@ int correctAndReplaceFile(char *fileName)
 			while ((*errorPtr)->lineNumber == lineCounter)
 			{
 				modifiedLine = checkErrorMessage((*errorPtr)->errorMessage, bufferCopy);
-				/* Update the copy for the next iteration. */
-				strcpy(bufferCopy, modifiedLine);
-				/* Free the memory for the modified line. */
-				free(modifiedLine);
+				if (modifiedLine)
+				{
+					/* Update the copy for the next iteration. */
+					strcpy(bufferCopy, modifiedLine);
+					/* Free the memory for the modified line. */
+					free(modifiedLine);
+				}
 				/* Move to the next error */
 				errorPtr++;
 			}

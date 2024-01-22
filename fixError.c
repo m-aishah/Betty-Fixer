@@ -11,21 +11,22 @@ int indent = 1;
  */
 char *checkErrorMessage(char *errorMessage, char buffer[])
 {
+	printf("Error Message -> %s\n", errorMessage);
 	/* Check if error is trailing whitespace error. */
 	if (strcmp(errorMessage, " trailing whitespace") == 0)
 	{
 		return (removeTrailingWhitespaces(buffer));
 	}
 	/* Check if error is code indent error. */
-	else if (errorMessage, " code indent should use tabs where possible")
+	else if (strcmp(errorMessage, " code indent should use tabs where possible") == 0)
 	{
 		return (fixIndent(buffer));
 	}
-	else if (errorMessage, " space required before the open parenthesis '('")
+	else if (strcmp(errorMessage, " space required before the open parenthesis '('") == 0)
 	{
 		return (fixSpaceBeforeBracket(buffer));
 	}
-	return ("This line has an error\n");
+	return (NULL);
 }
 
 /**
