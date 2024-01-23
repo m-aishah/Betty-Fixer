@@ -122,12 +122,13 @@ char *fixIndent(const char *orgStr)
 char *fixSpaceBeforeBracket(const char *str)
 {
 	int modStrIndex, strIndex, len;
+	int spaceInserted;
 	char *modifiedStr;
 	if (str == NULL)
 		return (NULL); /* Handle NULL input string. */
 
 	len = strlen(str);
-	modifiedStr = (char *)malloc((len * 1.5) * sizeof(char *));
+	modifiedStr = (char *)malloc((len + 1) * sizeof(char *));
 	if (modifiedStr == NULL)
 	{
 		return (NULL); /* Memory Allocation Failed. */
@@ -135,6 +136,8 @@ char *fixSpaceBeforeBracket(const char *str)
 	
 	modStrIndex = 0;
 	strIndex = 0;
+	spaceInserted = 0; /* Flag to track if space is already inserted */
+
 /**
 	while (strIndex < len)
 	{
@@ -148,11 +151,12 @@ char *fixSpaceBeforeBracket(const char *str)
 	for (int strIndex = 0; strIndex < len; strIndex++)
 	{
 		modifiedStr[modStrIndex++] = str[strIndex];
-		if (strIndex + 1 < len && str[strIndex] != ' ' && str[strIndex + 1] == '(')
+		if (!spaceInserted && strIndex + 1 < len && str[strIndex] != ' ' && str[strIndex + 1] == '(')
 		{
 			modifiedStr[modStrIndex++] = ' ';
+			spaceInserted = 1; /* Set the flag to true after inserting space */
 		}
 	}
-	return (modifiedStr);
 
+	return (modifiedStr);
 }
