@@ -39,6 +39,6 @@ int updateIndent(char []);
 char *checkErrorMessage(char *, char[]);
 char *removeTrailingWhitespaces(const char *);
 char *fixIndent(const char *orgStr);
-char *fixSpaceBeforeBracket(const char *str);
+char *fixSpaceBeforeParenthesis(const char *str);
 
 #endif

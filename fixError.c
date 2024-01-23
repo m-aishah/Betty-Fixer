@@ -24,7 +24,7 @@ char *checkErrorMessage(char *errorMessage, char buffer[])
 	}
 	else if (strcmp(errorMessage, " space required before the open parenthesis '('") == 0)
 	{
-		return (fixSpaceBeforeBracket(buffer));
+		return (fixSpaceBeforeParenthesis(buffer));
 	}
 	return (NULL);
 }
@@ -119,7 +119,13 @@ char *fixIndent(const char *orgStr)
 	return (correctedStr);
 }
 
-char *fixSpaceBeforeBracket(const char *str)
+/**
+ * fixSpaceBeforeParenthesis - adds space before an open parenthesis
+ * @str: string to be modified
+ *
+ * Return: returns a pointer to the modified string
+ */
+char *fixSpaceBeforeParenthesis(const char *str)
 {
 	int modStrIndex, strIndex, len;
 	int spaceInserted;
@@ -138,20 +144,11 @@ char *fixSpaceBeforeBracket(const char *str)
 	strIndex = 0;
 	spaceInserted = 0; /* Flag to track if space is already inserted */
 
-/**
-	while (strIndex < len)
-	{
-		modifiedStr[modStrIndex] = str[strIndex];
-		modStrIndex++;
-		strIndex++;
-		if (str[strIndex] != ' ' && strIndex + 1 < len && str[strIndex + 1] == '(')
-			modifiedStr[modStrIndex] = ' ';
-	}
-*/
 	for (int strIndex = 0; strIndex < len; strIndex++)
 	{
 		modifiedStr[modStrIndex++] = str[strIndex];
-		if (!spaceInserted && strIndex + 1 < len && str[strIndex] != ' ' && str[strIndex + 1] == '(')
+		if (!spaceInserted && strIndex + 1 < len && str[strIndex] != ' '
+				&& str[strIndex + 1] == '(')
 		{
 			modifiedStr[modStrIndex++] = ' ';
 			spaceInserted = 1; /* Set the flag to true after inserting space */
