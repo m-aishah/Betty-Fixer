@@ -12,7 +12,7 @@ As part of the requirements of graduating from the foundations stage to the spec
 <h2> :question: What is the Betty Fixer? </h2>
 Betty Fixer is a command line application built to fix betty errors in a specified C file. It was built for the purpose of helping a programmer with betty errors so that the resources that would have gone into worrying about such errors can be employed in more important areas (like the actual logic of the code).
 
-<h2> Setup & Usage </h2>
+<h2> :hammer: Setup & Usage </h2>
 
 <h4> Dependencies</h4>
 <ul>
@@ -72,7 +72,7 @@ Want to contribute to this project? You are welcome to [create an issue](https:/
 
 BettyFixer is made under the [MIT License](https://opensource.org/license/mit/)
 
-<h2>Authors</h2>
+<h2> :yellow_heart: Authors</h2>
 
 Meet the authors of this project [here](https://github.com/m-aishah/Betty-Fixer/blob/main/AUTHORS).
 
