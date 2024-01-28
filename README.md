@@ -1,7 +1,11 @@
-<h1> THE BETTY FIXER </h1>
+<div align="center">
 
-            
-[Authors](https://github.com/m-aishah/Betty-Fixer/blob/main/AUTHORS) | [Blog Post]() | [Landing Page](https://ezejanu.wixsite.com/bettyfixer)
+# THE BETTY FIXER
+
+[Authors](https://github.com/m-aishah/Betty-Fixer/blob/main/AUTHORS) &bull; [Blog Post]() &bull; [Landing Page](https://ezejanu.wixsite.com/bettyfixer)
+
+</div>
+
 
 <h2> :four_leaf_clover: Overview </h2>
 This project is the portfolio project that marks the 9th month of our jouney since we started "doing hard things".
