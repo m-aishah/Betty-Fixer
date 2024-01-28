@@ -1,6 +1,9 @@
 <h1> THE BETTY FIXER </h1>
 
-<h2> Overview </h2>
+            
+[Authors](https://github.com/m-aishah/Betty-Fixer/blob/main/AUTHORS) | [Blog Post]() | [Landing Page](https://ezejanu.wixsite.com/bettyfixer)
+
+<h2> :four_leaf_clover: Overview </h2>
 This project is the portfolio project that marks the 9th month of our jouney since we started "doing hard things".
 <br>
 <br>
@@ -50,7 +53,7 @@ For instance:
 
 <h2>  </h2>
 
-<h2> Future Updates </h2>
+<h2> :fire: Future Updates </h2>
 This project is still in the early stages. Here is a list of expected upgrades in coming weeks
 
 <br>
@@ -60,14 +63,18 @@ This project is still in the early stages. Here is a list of expected upgrades i
 <li> Work on more efficient way of setting up the Betty Fixer.</li>
 </ul>
 
-<h2> Contributing </h2>
+<h2> :globe_with_meridians: Contributing </h2>
+
 Want to contribute to this project? You are welcome to [create an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-an-issue). Thank you! 
 
 
-<h2> License</h2>
+<h2> :star2: License</h2>
+
 BettyFixer is made under the [MIT License](https://opensource.org/license/mit/)
 
+<h2>Authors</h2>
 
+Meet the authors of this project [here](https://github.com/m-aishah/Betty-Fixer/blob/main/AUTHORS).
 
 
 
