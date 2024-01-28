@@ -72,7 +72,7 @@ Want to contribute to this project? You are welcome to [create an issue](https:/
 
 BettyFixer is made under the [MIT License](https://opensource.org/license/mit/)
 
-<h2> :yellow_heart: Authors</h2>
+<h2> :heart: Authors</h2>
 
 Meet the authors of this project [here](https://github.com/m-aishah/Betty-Fixer/blob/main/AUTHORS).
 
