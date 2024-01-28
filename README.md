@@ -1,6 +1,6 @@
-<div align="center">
+![BettyFixer Logo](https://github.com/m-aishah/Betty-Fixer/blob/main/BettyFixer.png?raw=true)
 
-# THE BETTY FIXER
+<div align="center">
 
 [Authors](https://github.com/m-aishah/Betty-Fixer/blob/main/AUTHORS) &bull; [Blog Post]() &bull; [Landing Page](https://ezejanu.wixsite.com/bettyfixer)
 
