@@ -5,7 +5,7 @@ int main(void)
 {
     int a;
 	pritntf("This is to test the betty fixer.\n");
- 
+
     int a;
   a = 1;
 

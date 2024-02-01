@@ -41,6 +41,8 @@ void parseBettyOutput(int pipeFd[2])
 			}
 		}
 	}
+	if (!Errors[0])
+		exit(EXIT_SUCCESS);
 }
 
 /**
@@ -172,12 +174,9 @@ int correctAndReplaceFile(char *fileName)
 	fclose(tempFile);
 	fclose(filePtr);
 
-	/* Delete Original Source File */
-	/**
-	* remove(fileName);
-	* rename("tmp.c", fileName);
-	*
-	* printf("Successfully rwrote the lines that have errors!\n");
-	*/
+	/* Delete Original Source File */	
+	remove(fileName);
+	rename("tmp.c", fileName);
+
 	return (1);
 }
